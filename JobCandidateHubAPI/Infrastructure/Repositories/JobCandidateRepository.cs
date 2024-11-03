@@ -19,42 +19,15 @@ namespace JobCandidateHubAPI.Infrastructure.Repositories
             return _context.JobCandidates.Where(x => x.Email == email).Select(y => y.Id).FirstOrDefaultAsync();
         }
 
-        public async Task<long> Create(JobCandidateDto dto)
+        public async Task<long> Create(JobCandidate entity)
         {
-
-            JobCandidate entity = new()
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                GithubProfileUrl = dto.GithubProfileUrl,
-                LinkedinProfileUrl = dto.LinkedinProfileUrl,
-                TimeInterval = dto.TimeInterval,
-                Comment = dto.Comment
-            };
-
-
             _context.JobCandidates.Add(entity);
             await _context.SaveChangesAsync();
             return entity.Id;
         }
 
-        public async Task<long> Update(JobCandidateDto dto)
+        public async Task<long> Update(JobCandidate entity)
         {
-            JobCandidate entity = new()
-            {
-                Id = dto.Id,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                GithubProfileUrl = dto.GithubProfileUrl,
-                LinkedinProfileUrl = dto.LinkedinProfileUrl,
-                TimeInterval = dto.TimeInterval,
-                Comment = dto.Comment
-            };
-
             List<string> constantField = ["Id", "Email"];
             var entry = _context.JobCandidates.Attach(entity);
             foreach (var property in entry.OriginalValues.Properties)

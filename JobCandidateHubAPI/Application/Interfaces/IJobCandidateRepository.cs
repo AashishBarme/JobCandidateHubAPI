@@ -5,8 +5,8 @@ namespace JobCandidateHubAPI.Application.Interfaces
 {
     public interface IJobCandidateRepository
     {
-        public Task<long> Create(JobCandidateDto dto);
-        public Task<long> Update(JobCandidateDto dto);
+        public Task<long> Create(JobCandidate entity);
+        public Task<long> Update(JobCandidate entity);
         public Task<long> GetCandidateIdByEmail(string email);
     }
 }

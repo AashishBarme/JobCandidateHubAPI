@@ -13,15 +13,15 @@ namespace JobCandidateHubAPI.Controllers
     [Route("[controller]")]
     public class JobCandidateController : Controller
     {
-        private readonly IJobCandidateRepository _repo;
+        private readonly IJobCandidateService _service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobCandidateController"/> class.
         /// </summary>
         /// <param name="repo">The repository interface for job candidate data operations.</param>
-        public JobCandidateController(IJobCandidateRepository repo)
+        public JobCandidateController(IJobCandidateService service)
         {
-            _repo = repo;
+            _service =  service;
         }
 
         /// <summary>
@@ -41,19 +41,19 @@ namespace JobCandidateHubAPI.Controllers
             try
             {
                 // Check if the candidate already exists based on the email.
-                long candidateId = await _repo.GetCandidateIdByEmail(dto.Email);
+                long candidateId = await _service.GetCandidateIdByEmail(dto.Email);
 
                 if (candidateId != 0)
                 {
                     // If candidate exists, update the existing record.
                     dto.Id = candidateId;
-                    await _repo.Update(dto);
+                    await _service.Update(dto);
                     return Ok($"User with email: {dto.Email} is updated successfully");
                 }
                 else
                 {
                     // If candidate does not exist, create a new record.
-                    await _repo.Create(dto);
+                    await _service.Create(dto);
                     return Ok($"User with email: {dto.Email} is created successfully");
                 }
             }

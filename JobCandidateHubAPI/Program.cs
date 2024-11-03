@@ -1,4 +1,5 @@
 using JobCandidateHubAPI.Application.Interfaces;
+using JobCandidateHubAPI.Application.Services;
 using JobCandidateHubAPI.Infrastructure.Persistence;
 using JobCandidateHubAPI.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,18 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 {
     var serverVersion = new Version("8.0.23");
     option.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(serverVersion));
-    //option.LogTo(System.Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
 });
+builder.Services.AddScoped<IJobCandidateService, JobCandidateService>();
 builder.Services.AddScoped<IJobCandidateRepository, JobCandidateRepository>();
 
 var app = builder.Build();
+
+// run migration automatically
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
