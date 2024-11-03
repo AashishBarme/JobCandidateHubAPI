@@ -4,7 +4,6 @@ namespace JobCandidateHubAPI.Models
 {
     public class JobCandidateDto
     {
-        public long Id { get; set; } = 0;
         [Required]
         public string? FirstName { get; set; }
         [Required]

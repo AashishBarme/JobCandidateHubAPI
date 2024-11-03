@@ -35,12 +35,12 @@ namespace JobCandidateHubAPI.Services
             return await _repository.GetCandidateIdByEmail(email);
         }
 
-        public async Task<long> Update(JobCandidateDto dto)
+        public async Task<long> Update(JobCandidateDto dto, long candidateId)
         {
 
             JobCandidate entity = new()
             {
-                Id = dto.Id,
+                Id = candidateId,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,

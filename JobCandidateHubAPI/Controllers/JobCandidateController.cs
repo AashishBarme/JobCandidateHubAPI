@@ -16,18 +16,16 @@ namespace JobCandidateHubAPI.Controllers
     {
         private readonly IJobCandidateService _service;
         private readonly IMemoryCache _cache;
-        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobCandidateController"/> class.
         /// </summary>
         /// <param name="service">The service interface for job candidate data operations.</param>
         ///  <param name="cache">The cache interface for caching.</param>
-        public JobCandidateController(IJobCandidateService service, IMemoryCache cache, IConfiguration configuration)
+        public JobCandidateController(IJobCandidateService service, IMemoryCache cache)
         {
             _service =  service;
             _cache = cache;
-            _configuration = configuration;
         }
 
         /// <summary>
@@ -53,8 +51,7 @@ namespace JobCandidateHubAPI.Controllers
                 if (candidateId != 0)
                 {
                     // If candidate exists, update the existing record.
-                    dto.Id = candidateId;
-                    await _service.Update(dto);
+                    await _service.Update(dto, candidateId);
                     return Ok($"User with email: {dto.Email} is updated successfully");
                 }
                 else
