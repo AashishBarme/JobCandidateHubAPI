@@ -16,7 +16,7 @@ namespace JobCandidateHubAPI.Infrastructure.Repositories
 
         public Task<long> GetCandidateIdByEmail(string email)
         {
-            return _context.JobCandidates.Where(x => x.Email == email).Select(y => y.Id).FirstAsync();
+            return _context.JobCandidates.Where(x => x.Email == email).Select(y => y.Id).FirstOrDefaultAsync();
         }
 
         public async Task<long> Create(JobCandidateDto dto)
