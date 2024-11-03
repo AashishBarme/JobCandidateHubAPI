@@ -1,7 +1,7 @@
 using JobCandidateHubAPI.Application.Interfaces;
-using JobCandidateHubAPI.Application.Services;
 using JobCandidateHubAPI.Infrastructure.Persistence;
 using JobCandidateHubAPI.Infrastructure.Repositories;
+using JobCandidateHubAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

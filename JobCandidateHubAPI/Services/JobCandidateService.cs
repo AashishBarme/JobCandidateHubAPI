@@ -3,7 +3,7 @@ using JobCandidateHubAPI.Infrastructure.Entities;
 using JobCandidateHubAPI.Infrastructure.Repositories;
 using JobCandidateHubAPI.Models;
 
-namespace JobCandidateHubAPI.Application.Services
+namespace JobCandidateHubAPI.Services
 {
     public class JobCandidateService : IJobCandidateService
     {
