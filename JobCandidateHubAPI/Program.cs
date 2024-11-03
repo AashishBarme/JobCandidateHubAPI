@@ -1,4 +1,6 @@
+using JobCandidateHubAPI.Application.Interfaces;
 using JobCandidateHubAPI.Infrastructure.Persistence;
+using JobCandidateHubAPI.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -17,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(serverVersion));
     //option.LogTo(System.Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
 });
+builder.Services.AddScoped<IJobCandidateRepository, JobCandidateRepository>();
 
 var app = builder.Build();
 
