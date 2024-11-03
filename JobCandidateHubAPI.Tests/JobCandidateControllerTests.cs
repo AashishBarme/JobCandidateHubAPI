@@ -2,6 +2,7 @@ using JobCandidateHubAPI.Application.Interfaces;
 using JobCandidateHubAPI.Controllers;
 using JobCandidateHubAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using System;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace JobCandidateHubAPI.Tests
     {
         private readonly Mock<IJobCandidateService> _mockService;
         private readonly JobCandidateController _controller;
+        private readonly Mock<IMemoryCache> _cache;
 
         public JobCandidateControllerTests()
         {
             _mockService = new Mock<IJobCandidateService>();
-            _controller = new JobCandidateController(_mockService.Object);
+            _cache = new Mock<IMemoryCache>();
+            _controller = new JobCandidateController(_mockService.Object, _cache.Object);
         }
 
         [Fact]
@@ -39,19 +42,26 @@ namespace JobCandidateHubAPI.Tests
         public async Task Index_ReturnsOk_WhenCandidateIsUpdated()
         {
             var dto = new JobCandidateDto { Email = "test@example.com" };
-            _mockService.Setup(repo => repo.GetCandidateIdByEmail(dto.Email)).ReturnsAsync(1); // Candidate exists
-            _mockService.Setup(repo => repo.Update(dto)).ReturnsAsync(1);
+            var candidateId = 1;
+            _cache.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
+            _mockService.Setup(repo => repo.GetCandidateIdByEmail(dto.Email)).ReturnsAsync(candidateId); // Candidate exists
+            _mockService.Setup(repo => repo.Update(dto, candidateId)).ReturnsAsync(1);
             var result = await _controller.Index(dto);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal($"User with email: {dto.Email} is updated successfully", okResult.Value);
+            // Verify that Update was called once and Create was never called
+            _mockService.Verify(s => s.Update(dto, candidateId), Times.Once);
+            _mockService.Verify(s => s.Create(It.IsAny<JobCandidateDto>()), Times.Never);
         }
 
         [Fact]
         public async Task Index_ReturnsOk_WhenCandidateIsCreated()
         {
             var dto = new JobCandidateDto { Email = "newuser@example.com" };
+
             _mockService.Setup(repo => repo.GetCandidateIdByEmail(dto.Email)).ReturnsAsync(0); // Candidate does not exist
             _mockService.Setup(repo => repo.Create(dto)).ReturnsAsync(1);
+            _cache.Setup(c => c.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
             var result = await _controller.Index(dto);
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal($"User with email: {dto.Email} is created successfully", okResult.Value);
